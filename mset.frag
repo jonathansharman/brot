@@ -5,6 +5,7 @@ uniform vec2 res;
 uniform vec2 pos;
 uniform float scale;
 uniform int max_iters;
+uniform vec3 palette;
 
 void main() {
 	float height = scale;
@@ -21,6 +22,10 @@ void main() {
 		++iters;
 	}
 
-	float color = 10.0 * float(iters) / max_iters;
-	gl_FragColor = vec4(3.0 * color, 2.0 * color, color, 1.0);
+	if (iters == max_iters) {
+		gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+	} else {
+		float lum = 10.0 * float(iters) / max_iters;
+		gl_FragColor = vec4(palette.r * lum, palette.g * lum, palette.b * lum, 1.0);
+	}
 }

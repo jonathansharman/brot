@@ -9,6 +9,22 @@ int get_max_iters(float scale) {
 	return static_cast<int>(1'000.0f * sqrt(sqrt(sqrt(1.0f / scale))));
 }
 
+enum class palette { fire, ice, forest };
+
+void set_palette(sf::Shader& mset_shader, palette palette) {
+	switch (palette) {
+		case palette::fire:
+			mset_shader.setUniform("palette", sf::Glsl::Vec3(3.0f, 2.0f, 1.0f));
+			break;
+		case palette::ice:
+			mset_shader.setUniform("palette", sf::Glsl::Vec3(1.0f, 2.0f, 3.0f));
+			break;
+		case palette::forest:
+			mset_shader.setUniform("palette", sf::Glsl::Vec3(1.0f, 3.0f, 1.0f));
+			break;
+	}
+}
+
 int main() {
 	constexpr auto frame_duration = std::chrono::milliseconds{17};
 
@@ -27,6 +43,7 @@ int main() {
 	mset_shader.setUniform("scale", scale);
 	int max_iters = get_max_iters(scale);
 	mset_shader.setUniform("max_iters", max_iters);
+	set_palette(mset_shader, palette::ice);
 
 	sf::RenderStates const mset_states{&mset_shader};
 
@@ -58,6 +75,15 @@ int main() {
 						case sf::Keyboard::Down:
 							max_iters -= 10;
 							mset_shader.setUniform("max_iters", max_iters);
+							break;
+						case sf::Keyboard::Num1:
+							set_palette(mset_shader, palette::ice);
+							break;
+						case sf::Keyboard::Num2:
+							set_palette(mset_shader, palette::fire);
+							break;
+						case sf::Keyboard::Num3:
+							set_palette(mset_shader, palette::forest);
 							break;
 					}
 				case sf::Event::MouseButtonPressed:
